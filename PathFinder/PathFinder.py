@@ -1,5 +1,12 @@
 #import tkinter
 from tkinter import *
+class SK:
+    def __init__(self, name, x, y):
+        self.name = name
+        self.x = x
+        self.y = y
+
+#insert(SK(name, x, y))
 
 class PathFinder:
     #키관련 검색
@@ -27,8 +34,12 @@ class PathFinder:
                 for item in itemlist:
                     if item.nodeName == "itemList":
                         subitems = item.childNodes
-                        self.keyList.insert(temp,subitems[3].firstChild.nodeValue)
-                        temp+=1
+                        self.searchList.append(SK(subitems[3].firstChild.nodeValue, subitems[0].firstChild.nodeValue,
+                                                  subitems[1].firstChild.nodeValue))
+                        self.keyList.insert(temp, self.searchList[temp-1].name)
+                        print(self.searchList[temp-1].x,self.searchList[temp-1].y)
+                        temp += 1
+
 
 
     def search(self):
@@ -84,10 +95,15 @@ class PathFinder:
         # text를 검색정보로 변경해야함 .. 사이즈 확인용 text
 
         self.keyList = Listbox(F_list, width=40, height=19,yscrollcommand=scrollbar.set)
-
         self.keyList.pack()
 
         Label(F_list, text="선택지역 : ", bg=self.bgColor).pack(side=LEFT)
+#        self.searchList = self.searchList.curselection()[0]
+#        selected = ""
+#        for n in range(0,self.searchList.length):
+#            if self.searchList == n:
+#                selected = self.searchList[n]
+        Label(F_list, text="", bg=self.bgColor).pack(side=LEFT)
 
         Label(F_list, bg=self.bgColor).pack(side=LEFT)
         choose = Button(F_list, text="결정").pack(side=RIGHT)
@@ -111,6 +127,7 @@ class PathFinder:
         self.imageList.append(PhotoImage(file="map.gif"))
         self.bgColor = 'white'
         self.MainPage()
+        self.searchList = []
         self.window.mainloop()
 
 PathFinder()
