@@ -21,13 +21,15 @@ class PathFinder:
                 parseData = parseString(xmldoc)
                 ServiceResult = parseData.childNodes
                 msgBody = ServiceResult[0].childNodes
+                itemlist = msgBody[2].childNodes
+                print(itemlist)
                 temp = 1
-                for item in msgBody:
-                    if item.nodeName == "msgBody":
+                for item in itemlist:
+                    if item.nodeName == "itemList":
                         subitems = item.childNodes
-                        print(str(subitems[3].firstChild.nodeValue))
-                        #self.keyList.insert(temp,subitems[3].firstchild.nodeValue)
-                    temp+=1
+                        self.keyList.insert(temp,subitems[3].firstChild.nodeValue)
+                        temp+=1
+
 
     def search(self):
         searchKey = self.dep.get()
