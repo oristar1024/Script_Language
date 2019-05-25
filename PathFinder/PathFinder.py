@@ -11,6 +11,7 @@ class PathFinder:
     def getPlace(self,key):
         self.searchList = []
         self.keyList.delete(0)
+        self.map.configure(image = self.imageList[1])
 
 
         import urllib
