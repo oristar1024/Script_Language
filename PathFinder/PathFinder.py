@@ -158,7 +158,8 @@ class PathFinder:
         conn = http.client.HTTPConnection("ws.bus.go.kr")
         conn.request("GET","/api/rest/pathinfo/getPathInfoBySubway?ServiceKey=" + ServiceKey + option)
         req = conn.getresponse()
-
+        print("지하철경로")
+        print()
         if req.status == 200:
             xmldoc = req.read().decode('utf-8)')
             if xmldoc == None:
@@ -187,9 +188,42 @@ class PathFinder:
 
         # 버스 경로탐색
         conn = http.client.HTTPConnection("ws.bus.go.kr")
+        conn.request("GET", "/api/rest/pathinfo/getPathInfoByBus?ServiceKey=" + ServiceKey + option)
+        req = conn.getresponse()
+        print("버스경로")
+        print()
+        if req.status == 200:
+            xmldoc = req.read().decode('utf-8)')
+            if xmldoc == None:
+                pass
+            else:
+                parseData = parseString(xmldoc)
+                ServiceResult = parseData.childNodes
+                msgBody = ServiceResult[0].childNodes
+                itemlist = msgBody[2].childNodes
+                for item in itemlist:
+                    if item.nodeName == "itemList":
+                        subitems = item.childNodes
+                        for subitem in subitems:
+                            if subitem.nodeName == 'pathList':
+                                pathes = subitem.childNodes
+                                for path in pathes:
+                                    if path.nodeName == 'fname':
+                                        print(path.firstChild.nodeValue, "에서")
+                                    elif path.nodeName == 'routeNm':
+                                        print(path.firstChild.nodeValue, "타고")
+                                    elif path.nodeName == 'tname':
+                                        print(path.firstChild.nodeValue, "으로이동")
+                            elif subitem.nodeName == 'time':
+                                print("소요시간 약", subitem.firstChild.nodeValue, "분")
+                                print()
+
+        # 버스 + 지하철 경로탐색
+        conn = http.client.HTTPConnection("ws.bus.go.kr")
         conn.request("GET", "/api/rest/pathinfo/getPathInfoByBusNSub?ServiceKey=" + ServiceKey + option)
         req = conn.getresponse()
-
+        print("버스+지하철 경로")
+        print()
         if req.status == 200:
             xmldoc = req.read().decode('utf-8)')
             if xmldoc == None:
