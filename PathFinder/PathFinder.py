@@ -79,16 +79,15 @@ class PathFinder:
         self.mainB.pack(side = LEFT)
 
     def desButton(self):
-        iSearchIndex = self.keyList.curselection()
-        for n in range(len(self.searchList)):
-            if iSearchIndex[0] == n:
-                self.des.configure(text=str(self.searchList[n].name))
+        iSearchIndex = self.keyList.curselection()[0]
+        self.des.configure(text=str(self.searchList[iSearchIndex].name))
+        self.dest = self.searchList[iSearchIndex]
+        
     def depButton(self):
-        iSearchIndex = self.keyList.curselection()
-        for n in range(len(self.searchList)):
-            print(self.searchList[n].name)
-            if iSearchIndex[0] == n:
-                self.dep.configure(text=str(self.searchList[n].name))
+        iSearchIndex = self.keyList.curselection()[0]
+        self.dep.configure(text=str(self.searchList[iSearchIndex].name))
+        self.depart = self.searchList[iSearchIndex]
+
     def Page1(self):
         self.p1frame1 = Frame(self.canvas)
         self.p1frame1.pack()
