@@ -6,11 +6,13 @@ class SK:
         self.x = x
         self.y = y
 
-#insert(SK(name, x, y))
-
 class PathFinder:
     #키관련 검색
     def getPlace(self,key):
+        self.searchList = []
+        self.keyList.delete(0)
+
+
         import urllib
         import http.client
         hangul_utf8 = urllib.parse.quote(key)
@@ -38,11 +40,27 @@ class PathFinder:
                         self.keyList.insert(temp, self.searchList[temp-1].name)
                         temp += 1
 
+    def drawmap(self):
+        idx = self.keyList.curselection()[0]
+        sk = self.searchList[idx]
+        from urllib.request import urlopen
+        from io import BytesIO
+        from PIL import Image, ImageTk
+        url = "https://maps.googleapis.com/maps/api/staticmap?center=" + str(sk.y) + "," + str(sk.x) + \
+              "&zoom=15&markers=color:red|color:red|lavel:C|" +str(sk.y) + "," + str(sk.x) +\
+              "&size=359x291&format=jpg&key=AIzaSyCWJAM-nuDT2BaF08b6VR9dQXn3um7puaA"
+        with urlopen(url) as u:
+            raw_data = u.read()
+        im = Image.open(BytesIO(raw_data))
+        image = ImageTk.PhotoImage(im)
+        self.map.configure(image = image)
+        self.map.image = image
+
+
     def search(self):
         searchKey = self.keyword.get()
         self.keyList.delete(0,END)
         self.getPlace(searchKey)
-        pass
     def enterPage1(self):
         self.mainframe.destroy()
         self.Page1()
@@ -85,7 +103,6 @@ class PathFinder:
         self.keyword.pack(side=LEFT)
         Button(F_dep, text="검색",command = self.search).pack(side=LEFT)
 
-
         F_list = Frame(self.p1frame2, bg=self.bgColor)
         F_list.pack()
         Label(F_list, text="검색목록", bg=self.bgColor).pack()
@@ -100,13 +117,15 @@ class PathFinder:
         choose = Button(F_list, text="도착지",command = self.desButton).pack(side=RIGHT)
         choose = Button(F_list, text="출발지",command = self.depButton).pack(side=RIGHT)
 
-        choose = Button(F_list, text="지도보기").pack(side=LEFT)
+        choose = Button(F_list, text="지도보기", command = self.drawmap).pack(side=LEFT)
 
         self.p1frame3 = Frame(self.canvas, bg=self.bgColor)
         self.p1frame3.pack(side=RIGHT)
 
         Label(self.p1frame3, text="주변지도", bg=self.bgColor).pack()
-        map = Label(self.p1frame3, image=self.imageList[1]).pack()
+
+        self.map = Label(self.p1frame3, image = self.imageList[1])
+        self.map.pack()
 
         search = Button(self.p1frame3, text="검색", command = self.enterPage2)
         search.pack(side = RIGHT)
@@ -116,6 +135,7 @@ class PathFinder:
         Label(self.p1frame3, text="->", bg=self.bgColor).pack(side=RIGHT)
         self.dep = Label(self.p1frame3, text="출발", bg=self.bgColor)
         self.dep.pack(side=RIGHT)
+
 
     def Page2(self):
         pass
