@@ -153,6 +153,8 @@ class PathFinder:
         option = "&startX=" + str(StartX)+"&startY=" +str(StartY) +"&endX=" + str(endX) + "&endY=" + str(endY)
         import http.client
         from xml.dom.minidom import parseString
+
+        # 지하철 경로탐색
         conn = http.client.HTTPConnection("ws.bus.go.kr")
         conn.request("GET","/api/rest/pathinfo/getPathInfoBySubway?ServiceKey=" + ServiceKey + option)
         req = conn.getresponse()
@@ -183,6 +185,7 @@ class PathFinder:
                                 print("소요시간 약", subitem.firstChild.nodeValue, "분")
                                 print()
 
+        # 버스 경로탐색
         conn = http.client.HTTPConnection("ws.bus.go.kr")
         conn.request("GET", "/api/rest/pathinfo/getPathInfoByBusNSub?ServiceKey=" + ServiceKey + option)
         req = conn.getresponse()
