@@ -1,5 +1,6 @@
 #import tkinter
 from tkinter import *
+
 class SK:
     def __init__(self, name, x, y):
         self.name = name
