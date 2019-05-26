@@ -9,7 +9,7 @@ class SK:
 #insert(SK(name, x, y))
 
 class PathFinder:
-    #키관련 검색
+
     def getPlace(self,key):
         import urllib
         import http.client
@@ -129,6 +129,7 @@ class PathFinder:
         self.bgColor = 'white'
         self.MainPage()
         self.searchList = []
+        self.getInfo = []
         self.window.mainloop()
 
 PathFinder()
