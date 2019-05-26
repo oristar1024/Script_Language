@@ -1,5 +1,24 @@
 #import tkinter
 from tkinter import *
+class Path:
+    def __init__(self):
+        self.list = []
+        self.time = None
+
+    def render(self):
+        for path in self.list:
+            print(path)
+        print("소요시간 약", self.time, "분")
+        print()
+
+class SinglePath:
+    def __init__(self):
+        self.start = None
+        self.by = None
+        self.end = None
+
+    def render(self):
+        return str(self.start) + "에서 " + str(self.by) + "타고 " + str(self.end) + "로 이동"
 
 class SK:
     def __init__(self, name, x, y):
@@ -144,23 +163,22 @@ class PathFinder:
     def Page2(self):
         self.FindPath()
 
-    def FindPath(self):
+    def getPath(self, requestUrl, lst):
         StartX = self.depart.x
         StartY = self.depart.y
         endX = self.dest.x
         endY = self.dest.y
 
         ServiceKey = "N8USDHDG7JwSXDABxAAGBfrlp8wB6sYQDVQX8eEDTJeBpAce21z18uAhHFSTh%2BromrgASad0VNzaJ1YBkZi5IQ%3D%3D"
-        option = "&startX=" + str(StartX)+"&startY=" +str(StartY) +"&endX=" + str(endX) + "&endY=" + str(endY)
+        option = "&startX=" + str(StartX) + "&startY=" + str(StartY) + "&endX=" + str(endX) + "&endY=" + str(endY)
+
         import http.client
         from xml.dom.minidom import parseString
 
-        # 지하철 경로탐색
         conn = http.client.HTTPConnection("ws.bus.go.kr")
-        conn.request("GET","/api/rest/pathinfo/getPathInfoBySubway?ServiceKey=" + ServiceKey + option)
+        conn.request("GET", requestUrl + ServiceKey + option)
         req = conn.getresponse()
-        print("지하철경로")
-        print()
+
         if req.status == 200:
             xmldoc = req.read().decode('utf-8)')
             if xmldoc == None:
@@ -173,83 +191,50 @@ class PathFinder:
                 for item in itemlist:
                     if item.nodeName == "itemList":
                         subitems = item.childNodes
+                        tmppath = Path()
                         for subitem in subitems:
                             if subitem.nodeName == 'pathList':
                                 pathes = subitem.childNodes
+                                tmpSinglePath = SinglePath()
                                 for path in pathes:
                                     if path.nodeName == 'fname':
-                                        print(path.firstChild.nodeValue, "에서")
+                                        tmpSinglePath.start = path.firstChild.nodeValue
                                     elif path.nodeName == 'routeNm':
-                                        print(path.firstChild.nodeValue, "타고")
+                                        tmpSinglePath.by = path.firstChild.nodeValue
                                     elif path.nodeName == 'tname':
-                                        print(path.firstChild.nodeValue, "으로이동")
+                                        tmpSinglePath.end = path.firstChild.nodeValue
+                                tmppath.list.append(tmpSinglePath.render())
                             elif subitem.nodeName == 'time':
-                                print("소요시간 약", subitem.firstChild.nodeValue, "분")
-                                print()
+                                tmppath.time = subitem.firstChild.nodeValue
+                                lst.append(tmppath)
 
-        # 버스 경로탐색
-        conn = http.client.HTTPConnection("ws.bus.go.kr")
-        conn.request("GET", "/api/rest/pathinfo/getPathInfoByBus?ServiceKey=" + ServiceKey + option)
-        req = conn.getresponse()
-        print("버스경로")
+    def FindPath(self):
+        self.subPathList = []
+        self.busPathList = []
+        self.busNsubPathList = []
+
+        subUrl = "/api/rest/pathinfo/getPathInfoBySubway?ServiceKey="
+        busUrl = "/api/rest/pathinfo/getPathInfoByBus?ServiceKey="
+        busNsubUrl = "/api/rest/pathinfo/getPathInfoByBusNSub?ServiceKey="
+
+        self.getPath(subUrl, self.subPathList)
+        self.getPath(busUrl, self.busPathList)
+        self.getPath(busNsubUrl, self.busNsubPathList)
+
+        print("지하철 경로")
         print()
-        if req.status == 200:
-            xmldoc = req.read().decode('utf-8)')
-            if xmldoc == None:
-                pass
-            else:
-                parseData = parseString(xmldoc)
-                ServiceResult = parseData.childNodes
-                msgBody = ServiceResult[0].childNodes
-                itemlist = msgBody[2].childNodes
-                for item in itemlist:
-                    if item.nodeName == "itemList":
-                        subitems = item.childNodes
-                        for subitem in subitems:
-                            if subitem.nodeName == 'pathList':
-                                pathes = subitem.childNodes
-                                for path in pathes:
-                                    if path.nodeName == 'fname':
-                                        print(path.firstChild.nodeValue, "에서")
-                                    elif path.nodeName == 'routeNm':
-                                        print(path.firstChild.nodeValue, "타고")
-                                    elif path.nodeName == 'tname':
-                                        print(path.firstChild.nodeValue, "으로이동")
-                            elif subitem.nodeName == 'time':
-                                print("소요시간 약", subitem.firstChild.nodeValue, "분")
-                                print()
+        for path in self.subPathList:
+            path.render()
 
-        # 버스 + 지하철 경로탐색
-        conn = http.client.HTTPConnection("ws.bus.go.kr")
-        conn.request("GET", "/api/rest/pathinfo/getPathInfoByBusNSub?ServiceKey=" + ServiceKey + option)
-        req = conn.getresponse()
+        print("버스 경로")
+        print()
+        for path in self.busPathList:
+            path.render()
+
         print("버스+지하철 경로")
         print()
-        if req.status == 200:
-            xmldoc = req.read().decode('utf-8)')
-            if xmldoc == None:
-                pass
-            else:
-                parseData = parseString(xmldoc)
-                ServiceResult = parseData.childNodes
-                msgBody = ServiceResult[0].childNodes
-                itemlist = msgBody[2].childNodes
-                for item in itemlist:
-                    if item.nodeName == "itemList":
-                        subitems = item.childNodes
-                        for subitem in subitems:
-                            if subitem.nodeName == 'pathList':
-                                pathes = subitem.childNodes
-                                for path in pathes:
-                                    if path.nodeName == 'fname':
-                                        print(path.firstChild.nodeValue, "에서")
-                                    elif path.nodeName == 'routeNm':
-                                        print(path.firstChild.nodeValue, "타고")
-                                    elif path.nodeName == 'tname':
-                                        print(path.firstChild.nodeValue, "으로이동")
-                            elif subitem.nodeName == 'time':
-                                print("소요시간 약", subitem.firstChild.nodeValue, "분")
-                                print()
+        for path in self.busNsubPathList:
+            path.render()
 
     def __init__(self):
         self.window = Tk()
