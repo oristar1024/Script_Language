@@ -58,15 +58,14 @@ class PathFinder:
         self.map.configure(image = image)
         self.map.image = image
 
+
     def search(self):
         searchKey = self.keyword.get()
         self.keyList.delete(0,END)
         self.getPlace(searchKey)
-
     def enterPage1(self):
         self.mainframe.destroy()
         self.Page1()
-
     def enterPage2(self):
         if self.depart and self.dest:
             self.p1frame1.destroy()
@@ -75,13 +74,6 @@ class PathFinder:
             self.Page2()
         else:
             pass
-
-    def goPage2(self):
-        self.p2frame1.destroy()
-        self.p2frame2.destroy()
-        self.p2frame3.destroy()
-        self.p2frame4.destroy()
-        self.Page1()
     def MainPage(self):
         self.canvas = Canvas(self.window, bg = self.bgColor,width = 657, height = 443)
         self.canvas.pack()
@@ -101,7 +93,7 @@ class PathFinder:
         self.depart = self.searchList[iSearchIndex]
 
     def Page1(self):
-        self.p1frame1 = Frame(self.canvas, bg=self.bgColor)
+        self.p1frame1 = Frame(self.canvas)
         self.p1frame1.pack()
         title = Label(self.p1frame1, image=self.imageList[0]).pack()
 
@@ -148,38 +140,9 @@ class PathFinder:
         self.dep = Label(self.p1frame3, text="출발", bg=self.bgColor)
         self.dep.pack(side=RIGHT)
 
+
     def Page2(self):
         self.FindPath()
-        self.p2frame1 = Frame(self.canvas, bg=self.bgColor)
-        self.p2frame1.pack()
-        title = Label(self.p2frame1, image=self.imageList[0]).pack()
-
-        self.p2frame2 = Frame(self.canvas, bg=self.bgColor)
-        self.p2frame2.pack()
-
-        self.dep = Label(self.p2frame2, text=str(self.depart.name), bg=self.bgColor)
-        self.dep.pack(side=LEFT)
-        Label(self.p2frame2, text="->", bg=self.bgColor).pack(side = LEFT)
-        self.des = Label(self.p2frame2, text=str(self.dest.name), bg=self.bgColor)
-        self.des.pack(side = LEFT)
-        self.goP2 = Button(self.p2frame2, text="경로재설정", command = self.goPage2,bg = self.bgColor).pack(side = LEFT)
-
-        self.p2frame3 = Frame(self.canvas)
-        self.p2frame3.pack()
-        self.choose = IntVar()
-        rb1 = Radiobutton(self.p2frame3,variable=self.choose, text='버스', value=1, bg = self.bgColor)
-        rb1.pack(side=LEFT)
-        rb2 = Radiobutton(self.p2frame3,variable=self.choose, text='지하철', value=2, bg = self.bgColor)
-        rb2.pack(side=LEFT)
-        rb3 = Radiobutton(self.p2frame3,variable=self.choose, text='버스+지하철', value=3, bg = self.bgColor)
-        rb3.pack(side=LEFT)
-
-        self.p2frame4 = Frame(self.canvas)
-        self.p2frame4.pack()
-        scrollbar = Scrollbar(self.p2frame4)
-        scrollbar.pack(side=RIGHT, fill='y')
-        self.FindedPath = Listbox(self.p2frame4, width=92, height=20, yscrollcommand=scrollbar.set)
-        self.FindedPath.pack()
 
     def FindPath(self):
         StartX = self.depart.x

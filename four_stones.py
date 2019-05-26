@@ -24,7 +24,6 @@ class TicTacToe:
         Button(frame2, text = "재생성", command = self.again).pack()
         window.mainloop()
     def pressed(self, Row, Col):
-        self.checkGame()
         for r in range(5, -1, -1):
            if not self.gameList[r*7+Col]:
                 if self.playing:
@@ -48,7 +47,7 @@ class TicTacToe:
 
 
     def checkGame(self):
-        for r in range(6):
+        for r in range(3):
             if self.gameList[r*3] is 1 and self.gameList[r*3 +1] is 1 and self.gameList[r*3 +2] is 1:
                 self.playing = False
             elif self.gameList[r*3] is 2 and self.gameList[r*3+1] is 2 and self.gameList[r*3+2] is 2:

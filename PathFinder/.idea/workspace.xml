@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6de2449a-3930-4417-9391-0434ffd1c3d5" name="Default Changelist" comment="" />
+    <list default="true" id="6de2449a-3930-4417-9391-0434ffd1c3d5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/PathFinder.py" beforeDir="false" afterPath="$PROJECT_DIR$/PathFinder.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,7 +16,12 @@
         <entry file="file://$PROJECT_DIR$/PathFinder.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="213">
-              <caret line="70" column="35" selection-start-line="70" selection-start-column="35" selection-end-line="70" selection-end-column="35" />
+              <caret line="70" column="36" lean-forward="true" selection-start-line="70" selection-start-column="36" selection-end-line="70" selection-end-column="36" />
+              <folding>
+                <element signature="e#1391#1436#0" />
+                <element signature="e#1471#1579#0" />
+                <element signature="e#1612#1970#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -55,12 +62,22 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="ProjectPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="PathFinder" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PathFinder" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -116,9 +133,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.084826134" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.08520476" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -158,7 +175,12 @@
     <entry file="file://$PROJECT_DIR$/PathFinder.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="213">
-          <caret line="70" column="35" selection-start-line="70" selection-start-column="35" selection-end-line="70" selection-end-column="35" />
+          <caret line="70" column="36" lean-forward="true" selection-start-line="70" selection-start-column="36" selection-end-line="70" selection-end-column="36" />
+          <folding>
+            <element signature="e#1391#1436#0" />
+            <element signature="e#1471#1579#0" />
+            <element signature="e#1612#1970#0" />
+          </folding>
         </state>
       </provider>
     </entry>
