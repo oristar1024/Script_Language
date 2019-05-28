@@ -5,7 +5,7 @@ import random
 
 class FourMok:
     def remake(self):
-        self.turn = True
+        self.turn = False
         for r in range(6):
             for c in range(7):
                 self.buttonList[r * 7 + c]["image"] = self.imageList[2]
@@ -14,13 +14,13 @@ class FourMok:
     def pressed(self,Row,Col):
         for r in range(5,-1,-1):
             if self.buttonList[r*7+Col]["text"] == ' ':
+                self.turn = not self.turn
                 if self.turn:
                     self.buttonList[r*7+Col].configure(text = 'O', image = self.imageList[0])
                     self.checkWinner(r,Col)
                 else:
                     self.buttonList[r*7+Col].configure(text = 'X', image = self.imageList[1])
                     self.checkWinner(r,Col)
-                self.turn = not self.turn
                 break
 
     def checkWinner(self,Row,Col):
@@ -168,7 +168,7 @@ class FourMok:
 
     def __init__(self):
         window = Tk()
-        self.turn = True
+        self.turn = False
         self.imageList = []
         self.imageList.append(PhotoImage(file = "book/pybook/image/o.gif"))
         self.imageList.append(PhotoImage(file = "book/pybook/image/x.gif"))
