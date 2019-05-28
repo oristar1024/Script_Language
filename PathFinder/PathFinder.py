@@ -6,10 +6,11 @@ class Path:
         self.time = None
 
     def render(self):
+        renderedList = []
         for path in self.list:
-            print(path)
-        print("소요시간 약", self.time, "분")
-        print()
+            renderedList.append(path)
+        renderedList.append("소요시간 약 "+ str(self.time) + "분")
+        return renderedList
 
 class SinglePath:
     def __init__(self):
@@ -101,6 +102,7 @@ class PathFinder:
         self.p2frame3.destroy()
         self.p2frame4.destroy()
         self.Page1()
+
     def MainPage(self):
         self.canvas = Canvas(self.window, bg = self.bgColor,width = 657, height = 443)
         self.canvas.pack()
@@ -186,11 +188,12 @@ class PathFinder:
         self.p2frame3 = Frame(self.canvas)
         self.p2frame3.pack()
         self.choose = IntVar()
-        rb1 = Radiobutton(self.p2frame3,variable=self.choose, text='버스', value=1, bg = self.bgColor)
+
+        rb1 = Radiobutton(self.p2frame3,variable=self.choose, text='버스', value=1, bg = self.bgColor, command = self.select)
         rb1.pack(side=LEFT)
-        rb2 = Radiobutton(self.p2frame3,variable=self.choose, text='지하철', value=2, bg = self.bgColor)
+        rb2 = Radiobutton(self.p2frame3,variable=self.choose, text='지하철', value=2, bg = self.bgColor, command = self.select)
         rb2.pack(side=LEFT)
-        rb3 = Radiobutton(self.p2frame3,variable=self.choose, text='버스+지하철', value=3, bg = self.bgColor)
+        rb3 = Radiobutton(self.p2frame3,variable=self.choose, text='버스+지하철', value=3, bg = self.bgColor, command = self.select)
         rb3.pack(side=LEFT)
 
         self.p2frame4 = Frame(self.canvas)
@@ -258,20 +261,37 @@ class PathFinder:
         self.getPath(busUrl, self.busPathList)
         self.getPath(busNsubUrl, self.busNsubPathList)
 
-        print("지하철 경로")
-        print()
-        for path in self.subPathList:
-            path.render()
+    def select(self):
+        if self.choose.get() == 1:
+            self.printPathList(self.busPathList)
+        elif self.choose.get() == 2:
+            self.printPathList(self.subPathList)
+        elif self.choose.get() == 3:
+            self.printPathList(self.busNsubPathList)
 
-        print("버스 경로")
-        print()
-        for path in self.busPathList:
-            path.render()
+    def printPathList(self, lst):
+        self.FindedPath.delete(0, END)
+        self.indexList = []
+        self.idx = 0
+        temp = 0
+        for path in lst:
+            tmpSK = SK(str(self.idx), temp, None)
+            self.idx += 1
+            for line in path.list:
+                self.FindedPath.insert(temp, line)
+                temp += 1
+            self.FindedPath.insert(temp, "소요시간 약 " + str(path.time) + "분")
+            temp += 1
+            tmpSK.y = temp
+            self.indexList.append(tmpSK)
+        self.FindedPath.bind('<<ListboxSelect>>', self.bindListbox)
 
-        print("버스+지하철 경로")
-        print()
-        for path in self.busNsubPathList:
-            path.render()
+    def bindListbox(self, event = None):
+        selection = self.FindedPath.curselection()[0]
+        for idx in self.indexList:
+            if selection >= idx.x and selection < idx.y:
+                self.FindedPath.selection_set(idx.x, idx.y-1)
+
 
     def __init__(self):
         self.window = Tk()
