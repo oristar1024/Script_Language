@@ -171,6 +171,8 @@ class PathFinder:
 
     def Page2(self):
         self.FindPath()
+
+
         self.p2frame1 = Frame(self.canvas, bg=self.bgColor)
         self.p2frame1.pack()
         title = Label(self.p2frame1, image=self.imageList[0]).pack()
@@ -188,19 +190,24 @@ class PathFinder:
         self.p2frame3 = Frame(self.canvas)
         self.p2frame3.pack()
         self.choose = IntVar()
-
-        rb1 = Radiobutton(self.p2frame3,variable=self.choose, text='버스', value=1, bg = self.bgColor, command = self.select)
+        self.Graph = 0
+        self.listbox = 1
+        rb4 = Radiobutton(self.p2frame3, variable=self.choose, text='그래프보기', value=4, bg=self.bgColor, command=self.select)
+        rb4.pack(side=LEFT)
+        rb1 = Radiobutton(self.p2frame3,variable=self.choose, text='버스', value=1, bg = 'red', command = self.select)
         rb1.pack(side=LEFT)
-        rb2 = Radiobutton(self.p2frame3,variable=self.choose, text='지하철', value=2, bg = self.bgColor, command = self.select)
+        rb2 = Radiobutton(self.p2frame3,variable=self.choose, text='지하철', value=2, bg = 'blue', command = self.select)
         rb2.pack(side=LEFT)
-        rb3 = Radiobutton(self.p2frame3,variable=self.choose, text='버스+지하철', value=3, bg = self.bgColor, command = self.select)
+        rb3 = Radiobutton(self.p2frame3,variable=self.choose, text='버스+지하철', value=3, bg = 'green', command = self.select)
         rb3.pack(side=LEFT)
+
 
         self.p2frame4 = Frame(self.canvas)
         self.p2frame4.pack()
-        scrollbar = Scrollbar(self.p2frame4)
-        scrollbar.pack(side=RIGHT, fill='y')
-        self.FindedPath = Listbox(self.p2frame4, width=92, height=20, yscrollcommand=scrollbar.set)
+
+        self.scrollbar = Scrollbar(self.p2frame4)
+        self.scrollbar.pack(side=RIGHT, fill='y')
+        self.FindedPath = Listbox(self.p2frame4, width=92, height=20, yscrollcommand=self.scrollbar.set)
         self.FindedPath.pack()
 
     def getPath(self, requestUrl, lst):
@@ -263,11 +270,102 @@ class PathFinder:
 
     def select(self):
         if self.choose.get() == 1:
+            if self.Graph == 1:
+                self.graph.destroy()
+                self.Graph = 0
+            if self.listbox == 0:
+                self.scrollbar = Scrollbar(self.p2frame4)
+                self.scrollbar.pack(side=RIGHT, fill='y')
+                self.FindedPath = Listbox(self.p2frame4, width=92, height=20, yscrollcommand=self.scrollbar.set)
+                self.FindedPath.pack()
+                self.listbox = 1
             self.printPathList(self.busPathList)
         elif self.choose.get() == 2:
+            if self.Graph == 1:
+                self.graph.destroy()
+                self.Graph = 0
+            if self.listbox == 0:
+                self.scrollbar = Scrollbar(self.p2frame4)
+                self.scrollbar.pack(side=RIGHT, fill='y')
+                self.FindedPath = Listbox(self.p2frame4, width=92, height=20, yscrollcommand=self.scrollbar.set)
+                self.FindedPath.pack()
+                self.listbox = 1
             self.printPathList(self.subPathList)
         elif self.choose.get() == 3:
+            if self.Graph == 1:
+                self.graph.destroy()
+                self.Graph = 0
+            if self.listbox == 0:
+                self.scrollbar = Scrollbar(self.p2frame4)
+                self.scrollbar.pack(side=RIGHT, fill='y')
+                self.FindedPath = Listbox(self.p2frame4, width=92, height=20, yscrollcommand=self.scrollbar.set)
+                self.FindedPath.pack()
+                self.listbox = 1
             self.printPathList(self.busNsubPathList)
+        elif self.choose.get() == 4:
+            if self.listbox == 1:
+                self.FindedPath.destroy()
+                self.scrollbar.destroy()
+            if self.Graph != 1:
+                self.printGraph()
+                self.listbox = 0
+                self.Graph = 1
+
+    def printGraph(self):
+        GraphInfo = []
+        for info in self.busPathList:
+            tempInfo = []
+            tempInfo.append('bus')
+            tempInfo.append(info.time)
+            GraphInfo.append(tempInfo)
+        for info in self.subPathList:
+            tempInfo = []
+            tempInfo.append('sub')
+            tempInfo.append(info.time)
+            GraphInfo.append(tempInfo)
+        for info in self.busNsubPathList:
+            tempInfo = []
+            tempInfo.append('busNsub')
+            tempInfo.append(info.time)
+            GraphInfo.append(tempInfo)
+
+        for i in range(len(GraphInfo)-1):
+            for j in range(len(GraphInfo)-1-i):
+                if GraphInfo[j][1] > GraphInfo[j+1][1]:
+                    temp = GraphInfo[j+1]
+                    GraphInfo[j+1] = GraphInfo[j]
+                    GraphInfo[j] = temp
+
+        #print(GraphInfo)
+        histogram = [0]*len(GraphInfo)
+        for i in range(len(GraphInfo)):
+            histogram[i] = GraphInfo[i][1]
+
+        maxCount = GraphInfo[len(GraphInfo)-1][1]
+        #print(len(GraphInfo))
+        self.graph = Canvas(self.p2frame4, bg = self.bgColor,width=661, height=320)
+        self.graph.pack()
+        width = 661
+        height = 320
+        self.graph.create_line(20, height - 10, 640, height - 10, tags="line")
+        barW = (width - 5) / 26
+        for i in range(len(GraphInfo)):
+            if i > 23:
+                break
+            tmpColor = 'white'
+
+            if GraphInfo[i][0] == 'bus':
+                tmpColor = 'red'
+            elif GraphInfo[i][0] == 'sub':
+                tmpColor = 'blue'
+            else:
+                tmpColor = 'green'
+            self.graph.create_rectangle(i * barW + 30 , height - (height - 20) * int(histogram[i]) / int(maxCount),
+                                         (i + 1) * barW + 15, height - 10, tags="grim", fill = tmpColor)
+
+
+
+
 
     def printPathList(self, lst):
         self.FindedPath.delete(0, END)
