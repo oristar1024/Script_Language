@@ -210,6 +210,13 @@ class PathFinder:
         self.FindedPath = Listbox(self.p2frame4, width=92, height=20, yscrollcommand=self.scrollbar.set)
         self.FindedPath.pack()
 
+        # 메일 추가부분
+        self.MailEntry = Entry(self.p2frame4)
+        self.MailButton = Button(self.p2frame4, text="메일전송", command=self.sendMail)
+        self.MailButton.pack(side=RIGHT)
+        self.MailEntry.pack(side=RIGHT)
+        Label(self.p2frame4, text="받을메일주소 : ").pack(side=RIGHT)
+
     def getPath(self, requestUrl, lst):
         StartX = self.depart.x
         StartY = self.depart.y
@@ -370,6 +377,7 @@ class PathFinder:
     def printPathList(self, lst):
         self.FindedPath.delete(0, END)
         self.indexList = []
+        self.lineList = []  # 메일추가부분
         self.idx = 0
         temp = 0
         for path in lst:
@@ -377,18 +385,55 @@ class PathFinder:
             self.idx += 1
             for line in path.list:
                 self.FindedPath.insert(temp, line)
+                self.lineList.append(line)
                 temp += 1
             self.FindedPath.insert(temp, "소요시간 약 " + str(path.time) + "분")
+            self.lineList.append("소요시간 약 " + str(path.time) + "분")
             temp += 1
             tmpSK.y = temp
             self.indexList.append(tmpSK)
         self.FindedPath.bind('<<ListboxSelect>>', self.bindListbox)
 
-    def bindListbox(self, event = None):
+    def bindListbox(self, event=None):
         selection = self.FindedPath.curselection()[0]
         for idx in self.indexList:
             if selection >= idx.x and selection < idx.y:
-                self.FindedPath.selection_set(idx.x, idx.y-1)
+                self.FindedPath.selection_set(idx.x, idx.y - 1)
+
+    def sendMail(self):
+        import mimetypes
+        import smtplib
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+
+        self.host = "smtp.gmail.com"
+        self.port = "587"
+        self.htmlFileName = "logo.html"
+        self.senderAddr = "tronia94@gmail.com"
+        self.recipientAddr = self.MailEntry.get()
+
+        msg = MIMEMultipart("alternative")
+        msg['subject'] = "Finded Path"
+        msg['From'] = self.senderAddr
+        msg["To"] = self.recipientAddr
+
+
+        selection = self.FindedPath.curselection()
+        self.msgPart = []
+        for i in selection:
+            msgtext = self.lineList[i] + "<br>"
+            self.msgPart.append(MIMEText(msgtext, 'plane'))
+
+        for part in self.msgPart:
+            msg.attach(part)
+
+        s = smtplib.SMTP(self.host, self.port)
+        s.ehlo()
+        s.starttls()
+        s.ehlo()
+        s.login("tronia94", "dlstj5720")
+        s.sendmail(self.senderAddr, [self.recipientAddr], msg.as_string())
+        s.close()
 
 
     def __init__(self):
